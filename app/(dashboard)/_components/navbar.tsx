@@ -42,7 +42,6 @@ const NavBar = () => {
           />
         </div>
         {organization && <InviteButton />}
-
         <SignedOut>
           <SignInButton />
         </SignedOut>
