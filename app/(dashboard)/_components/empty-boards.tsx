@@ -7,7 +7,7 @@ import { useApiMutations } from "@/use-api-mutations";
 import { toast } from "sonner";
 
 export const EmptyBoards = () => {
-  const { mutate, pending } = useApiMutations(api.boards.create);
+  const { mutate, pending } = useApiMutations(api.board.create);
   const { organization } = useOrganization();
 
   const onClick = () => {
