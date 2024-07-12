@@ -1,6 +1,7 @@
 import "./globals.css";
 import { ConvexClientProvider } from "@/providers/convex-client-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { ModalProvider } from "@/providers/model-provider";
 export default function RootLayout({
   children,
 }: {
@@ -11,6 +12,7 @@ export default function RootLayout({
       <body>
         <ConvexClientProvider>
           <Toaster />
+          <ModalProvider />
           {children}
         </ConvexClientProvider>
       </body>
