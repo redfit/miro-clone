@@ -66,7 +66,6 @@ export const RenameModal = () => {
           </DialogFooter>
         </form>
       </DialogContent>
-      <div>RenameModal</div>
     </Dialog>
   );
 };
