@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Link2, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { useApiMutations } from "@/use-api-mutations";
+import { useApiMutations } from "@/hooks/use-api-mutations";
 import { api } from "@/convex/_generated/api";
 import { ConfirmModal } from "@/components/confirm-modal";
 import { Button } from "@/components/ui/button";

@@ -7,7 +7,7 @@ import { Footer } from "@/app/(dashboard)/_components/board-card/footer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Actions } from "@/components/actions";
 import { MoreHorizontal } from "lucide-react";
-import { useApiMutations } from "@/use-api-mutations";
+import { useApiMutations } from "@/hooks/use-api-mutations";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 

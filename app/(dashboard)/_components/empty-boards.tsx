@@ -3,7 +3,7 @@ import { api } from "@/convex/_generated/api";
 
 import { Button } from "@/components/ui/button";
 import { useOrganization } from "@clerk/nextjs";
-import { useApiMutations } from "@/use-api-mutations";
+import { useApiMutations } from "@/hooks/use-api-mutations";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 

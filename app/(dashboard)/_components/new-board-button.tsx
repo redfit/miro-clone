@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { useApiMutations } from "@/use-api-mutations";
+import { useApiMutations } from "@/hooks/use-api-mutations";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
