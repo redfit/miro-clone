@@ -108,3 +108,10 @@ export enum CanvasMode {
   Pencil,
   Note,
 }
+
+export type Layer =
+  | RectangleLayer
+  | EllipseLayer
+  | PathLayer
+  | TextLayer
+  | NoteLayer;
