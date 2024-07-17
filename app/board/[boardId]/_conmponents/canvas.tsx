@@ -17,12 +17,12 @@ import {
 
 import {
   useCanRedo,
-  useHistory,
   useCanUndo,
-  useSelf,
+  useHistory,
   useMutation,
-  useStorage,
   useOthersMapped,
+  useSelf,
+  useStorage,
 } from "@/liveblocks.config";
 import { useCallback, useMemo, useState } from "react";
 import CursorsPresence from "@/app/board/[boardId]/_conmponents/cursors-presence";
@@ -35,7 +35,6 @@ import { nanoid } from "nanoid";
 import { LiveObject } from "@liveblocks/client";
 import LayerPreview from "@/app/board/[boardId]/_conmponents/layer-preview";
 import SelectionBox from "@/app/board/[boardId]/_conmponents/selection-box";
-import { Pointer } from "lucide-react";
 
 const MAX_LAYERS = 100;
 
@@ -93,6 +92,41 @@ const Canvas = ({ boardId }: CanvasProps) => {
     },
     [],
   );
+
+  const translateSelectedLayer = useMutation(
+    ({ storage, self }, point: Point) => {
+      if (canvasState.mode !== CanvasMode.Translating) {
+        return;
+      }
+
+      const offset = {
+        x: point.x - canvasState.current.x,
+        y: point.y - canvasState.current.y,
+      };
+
+      const liveLayers = storage.get("layers");
+
+      for (const id of self.presence.selection) {
+        const layer = liveLayers.get(id);
+
+        if (layer) {
+          layer.update({
+            x: layer.get("x") + offset.x,
+            y: layer.get("y") + offset.y,
+          });
+        }
+      }
+
+      setCanvasState({ mode: CanvasMode.Translating, current: point });
+    },
+    [canvasState],
+  );
+
+  const unselectLayer = useMutation(({ setMyPresence, self }) => {
+    if (self.presence.selection.length > 0) {
+      setMyPresence({ selection: [] }, { addToHistory: true });
+    }
+  }, []);
 
   const resizeSelectedLayer = useMutation(({ storage, self }, point: Point) => {
     if (canvasState.mode !== CanvasMode.Resizing) {
@@ -154,18 +188,36 @@ const Canvas = ({ boardId }: CanvasProps) => {
     [canvasState],
   );
 
+  const onPointerDown = useMutation(
+    (e: React.PointerEvent) => {
+      const point = pointerEventToCanvasPoint(e, camera);
+
+      if (canvasState.mode === CanvasMode.Inserting) {
+        return;
+      }
+      setCanvasState({ origin: point, mode: CanvasMode.Pressing });
+    },
+    [camera, canvasState.mode, setCanvasState],
+  );
+
   const onPointerUp = useMutation(
     ({}, e) => {
       const point = pointerEventToCanvasPoint(e, camera);
 
-      if (canvasState.mode === CanvasMode.Inserting) {
+      if (
+        canvasState.mode === CanvasMode.None ||
+        canvasState.mode === CanvasMode.Pressing
+      ) {
+        unselectLayer();
+        setCanvasState({ mode: CanvasMode.None });
+      } else if (canvasState.mode === CanvasMode.Inserting) {
         insertLayer(canvasState.layerType, point);
       } else {
         setCanvasState({ mode: CanvasMode.None });
       }
       history.resume();
     },
-    [camera, canvasState, history, insertLayer],
+    [camera, canvasState, history, insertLayer, unselectLayer],
   );
 
   const selections = useOthersMapped((other) => other.presence.selection);
@@ -220,6 +272,7 @@ const Canvas = ({ boardId }: CanvasProps) => {
         onWheel={onWheel}
         onPointerMove={onPointerMove}
         onPointerLeave={onPointerLeave}
+        onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
       >
         <g style={{ transform: `translate(${camera.x}px, ${camera.y}px)` }}>
